@@ -2,6 +2,7 @@
 #include <stddef.h>
 #include "temperature_sensor.h"
 #include "vibration_processing.h"
+#include "vibration_acquisition.h"
 #include "platform_time.h"
 #include "battery_monitor.h"
 
@@ -51,10 +52,25 @@ bool MeasurementService_TakeMeasurement(Measurement_t *measurement)
         return false;
     }
     
-    if(!VibrationProcessing_GetRms(&measurement->vibrationRmsMg))
+    int16_t samples[4];
+    uint32_t sampleCount;
+    if (!VibrationAcquisition_GetSamples(
+        samples,
+        4U,
+        &sampleCount))
     {
         return false;
     }
+
+    if (!VibrationProcessing_CalculateRms(
+        samples,
+        sampleCount,
+        &measurement->vibrationRmsMg))
+    {
+        return false;
+    }
+
+
 
     if (!PlatformTime_GetTimestamp(&measurement->timestamp))
     {

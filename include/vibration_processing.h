@@ -5,6 +5,6 @@
 
 bool VibrationProcessing_Init(void);
 
-bool VibrationProcessing_GetRms(uint32_t *vibrationRmsMg);
+bool VibrationProcessing_CalculateRms(const int16_t *samples, uint32_t sampleCount, uint32_t *vibrationRmsMg);
 
 #endif

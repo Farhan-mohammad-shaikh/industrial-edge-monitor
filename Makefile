@@ -6,6 +6,6 @@ INCLUDES = -Iinclude
 
 TARGET = industrial-edge-monitor
 
-SOURCES = src/main.c src/application.c src/measurement_service.c src/temperature_sensor.c src/battery_monitor.c src/vibration_processing.c src/platform_time.c
+SOURCES = src/main.c src/application.c src/measurement_service.c src/temperature_sensor.c src/battery_monitor.c src/vibration_processing.c src/platform_time.c src/vibration_acquisition.c
 $(TARGET): $(SOURCES)
-	$(CC) $(CFLAGS) $(INCLUDES) $(SOURCES) -o $(TARGET)
+	$(CC) $(CFLAGS) $(INCLUDES) $(SOURCES) -o $(TARGET) -lm
