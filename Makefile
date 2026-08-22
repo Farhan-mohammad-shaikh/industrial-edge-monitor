@@ -1,0 +1,11 @@
+CC = gcc
+
+CFLAGS = -Wall -Wextra -Wpedantic -std=c11
+
+INCLUDES = -Iinclude
+
+TARGET = industrial-edge-monitor
+
+SOURCES = src/main.c src/application.c src/measurement_service.c src/temperature_sensor.c src/battery_monitor.c src/vibration_processing.c src/platform_time.c
+$(TARGET): $(SOURCES)
+	$(CC) $(CFLAGS) $(INCLUDES) $(SOURCES) -o $(TARGET)
