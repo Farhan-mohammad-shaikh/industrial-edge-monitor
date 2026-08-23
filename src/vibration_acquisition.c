@@ -2,14 +2,20 @@
 
 #include <stddef.h>
 
+static int16_t vibrationSamples[VIBRATION_SAMPLE_COUNT];
+
 bool VibrationAcquisition_Init(void)
 {
+    vibrationSamples[0] = 100;
+    vibrationSamples[1] = -100;
+    vibrationSamples[2] = 200;
+    vibrationSamples[3] = -200;
+
     return true;
 }
 
 bool VibrationAcquisition_GetSamples(
-    int16_t *samples,
-    uint32_t sampleCapacity,
+    const int16_t **samples,
     uint32_t *sampleCount)
 {
     if (samples == NULL)
@@ -22,17 +28,8 @@ bool VibrationAcquisition_GetSamples(
         return false;
     }
 
-    if (sampleCapacity < 4U)
-    {
-        return false;
-    }
-
-    samples[0] = 100;
-    samples[1] = -100;
-    samples[2] = 200;
-    samples[3] = -200;
-
-    *sampleCount = 4U;
+    *samples = vibrationSamples;
+    *sampleCount = VIBRATION_SAMPLE_COUNT;
 
     return true;
 }

@@ -1,13 +1,15 @@
-#ifndef VIBRATION_ACQUISATION_H
-#define VIBRATION_ACQUISATION_H
-#include <stdint.h>
+#ifndef VIBRATION_ACQUISITION_H
+#define VIBRATION_ACQUISITION_H
+
 #include <stdbool.h>
+#include <stdint.h>
+
+#define VIBRATION_SAMPLE_COUNT 4U
 
 bool VibrationAcquisition_Init(void);
 
 bool VibrationAcquisition_GetSamples(
-    int16_t *samples,
-    uint32_t sampleCapacity,
+    const int16_t **samples,
     uint32_t *sampleCount);
 
 #endif

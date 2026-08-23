@@ -19,6 +19,12 @@ bool MeasurementService_Init(void)
     {
         return false;
     }
+    
+    if (!VibrationAcquisition_Init())
+    {
+        return false;
+    }
+    
 
     if (!VibrationProcessing_Init())
     {
@@ -52,18 +58,17 @@ bool MeasurementService_TakeMeasurement(Measurement_t *measurement)
         return false;
     }
     
-    int16_t samples[4];
+    const int16_t *vibrationSamples;
     uint32_t sampleCount;
     if (!VibrationAcquisition_GetSamples(
-        samples,
-        4U,
+        &vibrationSamples,
         &sampleCount))
     {
         return false;
     }
 
     if (!VibrationProcessing_CalculateRms(
-        samples,
+        vibrationSamples,
         sampleCount,
         &measurement->vibrationRmsMg))
     {
