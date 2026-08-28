@@ -25,3 +25,8 @@ test-storage:
 	src/measurement_serializer.c \
 	src/external_flash.c \
 	-o test-storage
+test-crc32c:
+	$(CC) $(CFLAGS) $(INCLUDES) \
+	tests/test_crc32c.c \
+	src/crc32c.c \
+	-o test-crc32c
