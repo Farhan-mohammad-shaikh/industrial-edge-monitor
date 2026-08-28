@@ -1,1 +1,2 @@
 industrial-edge-monitor
+test-crc32c test-external_flash test-serializer test-storage test-vibration
