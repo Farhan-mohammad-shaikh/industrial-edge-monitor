@@ -1,3 +1,4 @@
+#include "crc32c.h"
 #include "external_flash.h"
 #include "measurement_serializer.h"
 #include "measurement_types.h"
@@ -6,6 +7,10 @@
 #include <stdint.h>
 #include <stdio.h>
 #include <stdlib.h>
+
+#define STORAGE_CRC_OFFSET MEASUREMENT_SERIALIZED_SIZE
+#define STORAGE_RECORD_SIZE \
+    (MEASUREMENT_SERIALIZED_SIZE + sizeof(uint32_t))
 
 int main(void)
 {
@@ -17,16 +22,7 @@ int main(void)
         .timestamp = 1000
     };
 
-    uint8_t readBuffer[MEASUREMENT_SERIALIZED_SIZE];
-
-    const uint8_t expected[MEASUREMENT_SERIALIZED_SIZE] =
-    {
-        0x01U,
-        0x2EU, 0x09U,
-        0x88U, 0x0EU,
-        0x9EU, 0x00U, 0x00U, 0x00U,
-        0xE8U, 0x03U, 0x00U, 0x00U
-    };
+    uint8_t readBuffer[STORAGE_RECORD_SIZE];
 
     if (!StorageService_Init())
     {
@@ -49,23 +45,30 @@ int main(void)
         return EXIT_FAILURE;
     }
 
-    for (uint32_t i = 0U;
-         i < MEASUREMENT_SERIALIZED_SIZE;
-         i++)
-    {
-        if (readBuffer[i] != expected[i])
-        {
-            printf(
-                "FAIL: byte %u expected 0x%02X, got 0x%02X\n",
-                i,
-                expected[i],
-                readBuffer[i]);
+    uint32_t storedCrc =
+        ((uint32_t)readBuffer[STORAGE_CRC_OFFSET]) |
+        ((uint32_t)readBuffer[STORAGE_CRC_OFFSET + 1U] << 8U) |
+        ((uint32_t)readBuffer[STORAGE_CRC_OFFSET + 2U] << 16U) |
+        ((uint32_t)readBuffer[STORAGE_CRC_OFFSET + 3U] << 24U);
 
-            return EXIT_FAILURE;
-        }
+    uint32_t calculatedCrc =
+        Crc32c_Calculate(
+            readBuffer,
+            MEASUREMENT_SERIALIZED_SIZE);
+
+    if (storedCrc != calculatedCrc)
+    {
+        printf(
+            "FAIL: stored CRC 0x%08X does not match calculated CRC 0x%08X\n",
+            storedCrc,
+            calculatedCrc);
+
+        return EXIT_FAILURE;
     }
 
-    printf("PASS: storage service integration test.\n");
+    printf(
+        "PASS: storage CRC verified: 0x%08X\n",
+        storedCrc);
 
     return EXIT_SUCCESS;
 }

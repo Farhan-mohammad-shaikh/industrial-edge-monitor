@@ -6,7 +6,7 @@ INCLUDES = -Iinclude
 
 TARGET = industrial-edge-monitor
 
-SOURCES = src/main.c src/application.c src/measurement_service.c src/temperature_sensor.c src/battery_monitor.c src/vibration_processing.c src/platform_time.c src/vibration_acquisition.c src/storage_service.c src/measurement_serializer.c src/external_flash.c
+SOURCES = src/main.c src/application.c src/measurement_service.c src/temperature_sensor.c src/battery_monitor.c src/vibration_processing.c src/platform_time.c src/vibration_acquisition.c src/storage_service.c src/measurement_serializer.c src/external_flash.c src/crc32c.c
 $(TARGET): $(SOURCES)
 	$(CC) $(CFLAGS) $(INCLUDES) $(SOURCES) -o $(TARGET) -lm
 
@@ -24,6 +24,7 @@ test-storage:
 	src/storage_service.c \
 	src/measurement_serializer.c \
 	src/external_flash.c \
+	src/crc32c.c \
 	-o test-storage
 test-crc32c:
 	$(CC) $(CFLAGS) $(INCLUDES) \
